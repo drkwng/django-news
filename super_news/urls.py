@@ -26,7 +26,6 @@ import debug_toolbar
 
 urlpatterns = [
     path('', views.index_handler),
-    path('admin/', admin.site.urls),
     path('about/', views.about_handler),
     path('contact/', views.contact_handler),
     path('blog/', views.blog_handler),
@@ -34,11 +33,12 @@ urlpatterns = [
     path('single/', views.single_handler),
     path('robots.txt', views.robots_handler),
 
+    path('admin/', admin.site.urls),
+    path('summernote/', include('django_summernote.urls')),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 if settings.DEBUG:
-
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
