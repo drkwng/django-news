@@ -5,7 +5,7 @@ __pycache__/
 .idea/
 
 # Media folders
-# media/images/*
+media/images/*
 media/avatars/*
 
 # C extensions
