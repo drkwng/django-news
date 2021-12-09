@@ -11,8 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from news.models import Article, Author, Category
 
 
-# Coindesk author in DB has id 3
-author = Author.objects.get(id=3)
+author, created = Author.objects.get_or_create(name='Coindesk')
 
 
 def format_datetime(date):

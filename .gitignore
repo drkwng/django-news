@@ -4,12 +4,15 @@ __pycache__/
 *$py.class
 .idea/
 
+# Media folders
+media/images/*
+media/avatars/*
+
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
-media/images/
 build/
 develop-eggs/
 dist/
