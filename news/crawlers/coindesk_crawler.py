@@ -1,3 +1,4 @@
+import sys
 import re
 from datetime import datetime
 from time import sleep
@@ -23,51 +24,56 @@ def format_datetime(date):
 
 def crawl_one(url):
 
-    with HTMLSession() as session:
-        response = session.get(url)
+    try:
 
-    name = response.html.xpath('//div[@class="at-headline"]/h1')[0].text.strip()
-    short_description = response.html.xpath('//div[@class="at-subheadline"]/h2')[0].text.strip()
-    content = response.html.xpath('//div[@class="at-text"]/div/p')
-    img_url = response.html.xpath('//div[@class="media"]/figure/img/@src')[0]
-    pub_date = response.html.xpath('//div[contains(@class, "at-created")]/div/span[contains(@class, "dHSCiD")]')[0].text
-    pub_category = response.html.xpath('//div[@class="at-category"]/a/span')[0].text.strip()
-
-    my_content = ''
-    for element in content:
-        my_content += f'<p>{element.text}</p>'
-
-    img_name = slugify(name)
-    img_type = img_url.split('.')[-1]
-
-    img_path = f'images/{img_name}.{img_type}'
-
-    with open(f'media/{img_path}', 'wb') as f:
         with HTMLSession() as session:
-            response = session.get(img_url)
-            f.write(response.content)
+            response = session.get(url)
 
-    category = {
-        'name': pub_category,
-        'slug': slugify(pub_category)
-    }
+        name = response.html.xpath('//div[@class="at-headline"]/h1')[0].text.strip()
+        short_description = response.html.xpath('//div[@class="at-subheadline"]/h2')[0].text.strip()
+        content = response.html.xpath('//div[@class="at-text"]/div/p')
+        img_url = response.html.xpath('//div[@class="media"]/figure/img/@src')[0]
+        pub_date = response.html.xpath('//div[contains(@class, "at-created")]/div/span[contains(@class, "dHSCiD")]')[0].text
+        pub_category = response.html.xpath('//div[@class="at-category"]/a/span')[0].text.strip()
 
-    article = {
-        'name': name,
-        'slug': slugify(name),
-        'short_description': short_description,
-        'content': my_content,
-        'main_image': img_path,
-        'pub_date': format_datetime(pub_date),
-        'author': author,
-    }
+        my_content = ''
+        for element in content:
+            my_content += f'<p>{element.text}</p>'
 
-    article, created = Article.objects.get_or_create(**article)
+        img_name = slugify(name)
+        img_type = img_url.split('.')[-1]
 
-    cat, created = Category.objects.get_or_create(**category)
-    article.categories.add(cat)
+        img_path = f'images/{img_name}.{img_type}'
 
-    print(article)
+        with open(f'media/{img_path}', 'wb') as f:
+            with HTMLSession() as session:
+                response = session.get(img_url)
+                f.write(response.content)
+
+        category = {
+            'name': pub_category,
+            'slug': slugify(pub_category)
+        }
+
+        article = {
+            'name': name,
+            'slug': slugify(name),
+            'short_description': short_description,
+            'content': my_content,
+            'main_image': img_path,
+            'pub_date': format_datetime(pub_date),
+            'author': author,
+        }
+
+        article, created = Article.objects.get_or_create(**article)
+
+        cat, created = Category.objects.get_or_create(**category)
+        article.categories.add(cat)
+
+        print(article)
+
+    except Exception as e:
+        print(f'{url}', e, type(e), sys.exc_info()[-1].tb_lineno)
 
 
 def get_urls():

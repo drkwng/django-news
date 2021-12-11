@@ -1,9 +1,10 @@
 from django.db import models
+from string import punctuation
 
 
 # Create your models here.
 class Category(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(max_length=255, unique=True)
     in_menu = models.BooleanField(default=True)
     order = models.IntegerField(default=1)
@@ -32,6 +33,7 @@ class Article(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     content = models.TextField()
+    content_words_count = models.IntegerField(null=True, blank=True)
     short_description = models.TextField()
     main_image = models.ImageField(upload_to='images')
     pub_date = models.DateTimeField(auto_now_add=True)
@@ -42,6 +44,13 @@ class Article(models.Model):
 
     def __str__(self):
         return self.name
+
+    def count_unique_words(self):
+        text = self.content.replace('<p>', '').replace('</p>', '')
+        for symbol in punctuation:
+            text = text.replace(symbol, '')
+        words = text.split()
+        return len(set(words))
 
 
 class Comment(models.Model):
