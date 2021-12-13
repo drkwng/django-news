@@ -1,3 +1,5 @@
+{% load static %}
+
 <footer>
    <!-- Footer Start-->
    <div class="footer-area footer-padding fix">
@@ -8,18 +10,12 @@
                         <div class="single-footer-caption">
                             <!-- logo -->
                             <div class="footer-logo">
-                                <a href="index.html"><img src="/static/img/logo/logo2_footer.png" alt=""></a>
+                                <a href="{% url 'homepage' %}"><img src="{% static 'img/logo/logo2_footer.png' %}" alt=""></a>
                             </div>
                             <div class="footer-tittle">
                                 <div class="footer-pera">
                                     <p>Suscipit mauris pede for con sectetuer sodales adipisci for cursus fames lectus tempor da blandit gravida sodales  Suscipit mauris pede for con sectetuer sodales adipisci for cursus fames lectus tempor da blandit gravida sodales  Suscipit mauris pede for sectetuer.</p>
                                 </div>
-                            </div>
-                            <!-- social -->
-                            <div class="footer-social">
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-instagram"></i></a>
-                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
                             </div>
                         </div>
                     </div>
@@ -39,7 +35,7 @@
                                         onblur="this.placeholder = ' Email Address '">
                                         <div class="form-icon">
                                         <button type="submit" name="submit" id="newsletter-submit"
-                                        class="email_icon newsletter-submit button-contactForm"><img src="/static/img/logo/form-iocn.png" alt=""></button>
+                                        class="email_icon newsletter-submit button-contactForm"><img src="{% static 'img/logo/form-iocn.png' %}" alt=""></button>
                                         </div>
                                         <div class="mt-10 info"></div>
                                     </form>
@@ -61,15 +57,6 @@
                             <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="footer-menu f-right">
-                            <ul>
-                                <li><a href="#">Terms of use</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
                         </div>
                     </div>
                 </div>

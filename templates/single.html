@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 <section class="blog_area single-post-area section-padding">
    <div class="container">
@@ -7,7 +9,7 @@
          <div class="col-lg-8 posts-list">
             <div class="single-post">
                <div class="feature-img">
-                  <img class="img-fluid" src="/static/img/blog/single_blog_1.png" alt="">
+                  <img class="img-fluid" src="{% static 'img/blog/single_blog_1.png' %}" alt="">
                </div>
                <div class="blog_details">
                   <h2>Second divided from form fish beast made every of seas
@@ -69,7 +71,7 @@
                         class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
                         <div class="thumb">
                            <a href="#">
-                              <img class="img-fluid" src="/static/img/post/preview.png" alt="">
+                              <img class="img-fluid" src="{% static 'img/post/preview.png' %}" alt="">
                            </a>
                         </div>
                         <div class="arrow">
@@ -99,7 +101,7 @@
                         </div>
                         <div class="thumb">
                            <a href="#">
-                              <img class="img-fluid" src="/static/img/post/next.png" alt="">
+                              <img class="img-fluid" src="{% static 'img/post/next.png' %}" alt="">
                            </a>
                         </div>
                      </div>
@@ -108,7 +110,7 @@
             </div>
             <div class="blog-author">
                <div class="media align-items-center">
-                  <img src="/static/img/blog/author.png" alt="">
+                  <img src="{% static 'img/blog/author.png' %}" alt="">
                   <div class="media-body">
                      <a href="#">
                         <h4>Harvard milan</h4>
@@ -124,7 +126,7 @@
                   <div class="single-comment justify-content-between d-flex">
                      <div class="user justify-content-between d-flex">
                         <div class="thumb">
-                           <img src="/static/img/comment/comment_1.png" alt="">
+                           <img src="{% static 'img/comment/comment_1.png' %}" alt="">
                         </div>
                         <div class="desc">
                            <p class="comment">
@@ -150,7 +152,7 @@
                   <div class="single-comment justify-content-between d-flex">
                      <div class="user justify-content-between d-flex">
                         <div class="thumb">
-                           <img src="/static/img/comment/comment_2.png" alt="">
+                           <img src="{% static 'img/comment/comment_2.png' %}" alt="">
                         </div>
                         <div class="desc">
                            <p class="comment">
@@ -176,7 +178,7 @@
                   <div class="single-comment justify-content-between d-flex">
                      <div class="user justify-content-between d-flex">
                         <div class="thumb">
-                           <img src="/static/img/comment/comment_3.png" alt="">
+                           <img src="{% static 'img/comment/comment_3.png' %}" alt="">
                         </div>
                         <div class="desc">
                            <p class="comment">
