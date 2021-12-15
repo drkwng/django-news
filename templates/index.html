@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load thumbnail %}
 
 {% block content %}
 <main>
@@ -20,7 +21,9 @@
                                     <div class="col-lg-6 col-md-6">
                                         <div class="single-what-news mb-100">
                                             <div class="what-img">
-                                                <img src="{{ article.main_image.url }}" alt="">
+                                                {% thumbnail article.main_image "770" as im %}
+                                                <img src="{{ im.url }}" alt="">
+                                                {% endthumbnail %}
                                             </div>
                                             <div class="what-cap">
                                                 <span>{{ article.pub_date }}</span>

@@ -1,7 +1,6 @@
 import sys
 import re
 from datetime import datetime
-from time import sleep
 
 from slugify import slugify
 from requests_html import HTMLSession
@@ -31,7 +30,7 @@ def crawl_one(url):
 
         name = response.html.xpath('//div[@class="at-headline"]/h1')[0].text.strip()
         short_description = response.html.xpath('//div[@class="at-subheadline"]/h2')[0].text.strip()
-        content = response.html.xpath('//div[@class="at-text"]/div/p')
+        content = response.html.xpath("//div[@class='at-text']/div")
         img_url = response.html.xpath('//div[@class="media"]/figure/img/@src')[0]
         pub_date = response.html.xpath('//div[contains(@class, "at-created")]/div/span[contains(@class, "dHSCiD")]')[0].text
         pub_category = response.html.xpath('//div[@class="at-category"]/a/span')[0].text.strip()

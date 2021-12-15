@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from .models import Article, Category
+from django.core.exceptions import ObjectDoesNotExist
+
+from .models import Article, Category, Comment
 
 from django.db.models import Count
 
@@ -8,12 +10,8 @@ def index_handler(request):
     last_articles = Article.objects.all().order_by(
         '-pub_date')[:8].prefetch_related('categories')
 
-    cat_list = Category.objects.annotate(count=Count(
-        'article__id')).order_by('count')
-
     context = {
-        'last_articles': last_articles,
-        'menu_categories': cat_list
+        'last_articles': last_articles
     }
     return render(request, 'index.html', context)
 
@@ -28,22 +26,47 @@ def contact_handler(request):
     return render(request, 'contact.html', context)
 
 
-def blog_handler(request):
-    last_articles = Article.objects.all().order_by(
-        '-pub_date')[:10].prefetch_related('categories')
+def blog_handler(request, **kwargs):
+    cat_slug = kwargs.get('cat_slug')
+    category = ''
+    if cat_slug:
+        category = Category.objects.get(slug=cat_slug)
+        last_articles = Article.objects.filter(
+            categories__slug=cat_slug).order_by(
+            '-pub_date')[:10].prefetch_related('categories')
+    else:
+        last_articles = Article.objects.all().order_by(
+            '-pub_date')[:10].prefetch_related('categories')
 
-    context = {'last_articles': last_articles}
+    context = {
+        'last_articles': last_articles,
+        'category': category
+    }
 
-    return render(request, 'blog.html', context)
-
-
-def category_handler(request, cat_slug):
-    context = {}
     return render(request, 'category.html', context)
 
 
-def single_handler(request, slug):
-    context = {}
+def single_handler(request, post_slug):
+    main_article = Article.objects.get(slug=post_slug)
+
+    try:
+        prev_article = Article.objects.get(id=main_article.id-1)
+    except ObjectDoesNotExist:
+        prev_article = None
+
+    try:
+        next_article = Article.objects.get(id=main_article.id+1)
+    except ObjectDoesNotExist:
+        next_article = None
+
+    # comments = Comment.objects.get(article_id=main_article.id)
+
+    context = {
+        'article': main_article,
+        'prev_article': prev_article,
+        'next_article': next_article,
+        # 'comments': comments
+    }
     return render(request, 'single.html', context)
 
 
