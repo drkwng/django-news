@@ -28,9 +28,15 @@ urlpatterns = [
     path('', views.index_handler, name='homepage'),
     path('about', views.about_handler, name='about'),
     path('contact', views.contact_handler, name='contact'),
+
     path('blog', views.blog_handler, name='blog'),
-    path('<cat_slug>', views.blog_handler, name='category'),
+    path('blog/page/<number>', views.blog_handler, name='blog_pager'),
+
+    path('category/<cat_slug>', views.blog_handler, name='category'),
+    path('category/<cat_slug>/page/<number>', views.blog_handler, name='category_pager'),
+
     path('post/<post_slug>', views.single_handler, name='article'),
+
     path('robots.txt', views.robots_handler),
 
     path('admin/', admin.site.urls),
