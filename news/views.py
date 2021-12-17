@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 
-from .models import Article, Category, Comment
+from .models import Article, Category, Comment, Newsletter
 from .forms import CommentForm
 
 

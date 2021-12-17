@@ -74,6 +74,8 @@ class Newsletter(models.Model):
     subscribe_date = models.DateTimeField(auto_now_add=True)
     unsubscribe_date = models.DateTimeField(null=True, blank=True)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.email
 
