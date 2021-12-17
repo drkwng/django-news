@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 
-from .models import Article, Category
+from .models import Article, Category, Comment
+from .forms import CommentForm
 
 
 def index_handler(request):
@@ -26,31 +29,28 @@ def contact_handler(request):
 
 def blog_handler(request, **kwargs):
     cat_slug = kwargs.get('cat_slug')
-    page = int(kwargs.get('number', 1))
-    count = 10
+    current_page = int(request.GET.get('page', 1))
+    articles_on_page = 10
 
     if cat_slug:
         category = get_object_or_404(Category, slug=cat_slug)
         last_articles = Article.objects.filter(
             categories__slug=cat_slug).order_by(
-            '-pub_date')[(page-1)*count:page*count].prefetch_related('categories')
-        art_count = Article.objects.filter(
-            categories__slug=cat_slug).count()
-        max_page = (art_count // count) + 1
+            '-pub_date').prefetch_related('categories')
+        paginator = Paginator(last_articles, articles_on_page)
+        page_obj = paginator.get_page(current_page)
 
     else:
-        art_count = Article.objects.all().count()
-        max_page = (art_count // count) + 1
         last_articles = Article.objects.all().order_by(
-            '-pub_date')[(page-1)*count:page*count].prefetch_related('categories')
+            '-pub_date').prefetch_related('categories')
         category = None
+        paginator = Paginator(last_articles, articles_on_page)
+        page_obj = paginator.get_page(current_page)
 
     context = {
-        'last_articles': last_articles,
         'category': category,
-        'pages': range(2, max_page+1),
-        'current_page': page,
-        'max_page': max_page
+        'page_obj': page_obj,
+        'paginator': paginator
     }
 
     return render(request, 'category.html', context)
@@ -69,14 +69,30 @@ def single_handler(request, post_slug):
     except ObjectDoesNotExist:
         next_article = None
 
-    # comments = Comment.objects.get(article_id=main_article.id)
-
     context = {
         'article': main_article,
         'prev_article': prev_article,
         'next_article': next_article,
-        # 'comments': comments
     }
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            data['article'] = main_article
+            Comment.objects.create(**data)
+            form = None
+
+        else:
+            messages.add_message(
+                request, messages.INFO, 'Error in form fields')
+
+    else:
+        form = CommentForm()
+
+    context['form'] = form
+
     return render(request, 'single.html', context)
 
 

@@ -13,7 +13,7 @@
                <div class="d-flex justify-content-between">
                   <div class="d-flex align-items-center">
                      <h5>
-                        <a href="https://{{ comm.website }}">{{ comm.name }}</a>
+                        <a href="{{ comm.website }}">{{ comm.name|title }}</a>
                      </h5>
                      <p class="date">{{ comm.pub_date }} </p>
                   </div>
@@ -29,27 +29,43 @@
 </div>
 <div class="comment-form" id="reply">
    <h4>Leave a Reply</h4>
-   <form class="form-contact comment_form" action="#" id="commentForm">
+   <form class="form-contact comment_form" action="#reply" method="post" id="commentForm">
+      {% csrf_token %}
+
       <div class="row">
          <div class="col-12">
             <div class="form-group">
-               <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9"
-                  placeholder="Write Comment"></textarea>
+               {{ form.comment.errors }}
+               <textarea class="form-control w-100" name="comment" id="comment"
+                         required cols="30" rows="9"
+                         placeholder="Write Comment">{% if form.comment.value %}{{ form.comment.value }}{% endif %}</textarea>
             </div>
          </div>
          <div class="col-sm-6">
             <div class="form-group">
-               <input class="form-control" name="name" id="name" type="text" placeholder="Name">
+               {{ form.name.errors }}
+               <input class="form-control" name="name" id="name" required type="text" placeholder="Name"
+                      {% if form.name.value %}
+                      value="{{ form.name.value }}"
+                      {% endif %}>
             </div>
          </div>
          <div class="col-sm-6">
             <div class="form-group">
-               <input class="form-control" name="email" id="email" type="email" placeholder="Email">
+               {{ form.email.errors }}
+               <input class="form-control" name="email" id="email" required type="email" placeholder="Email"
+                      {% if form.email.value %}
+                      value="{{ form.email.value }}"
+                      {% endif %}>
             </div>
          </div>
          <div class="col-12">
             <div class="form-group">
-               <input class="form-control" name="website" id="website" type="text" placeholder="Website">
+               {{ form.website.errors }}
+               <input class="form-control" name="website" id="website" type="text" placeholder="Website"
+                      {% if form.website.value %}
+                      value="{{ form.website.value }}"
+                      {% endif %}>
             </div>
          </div>
       </div>
