@@ -3,8 +3,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
-
 from django.urls import reverse
+
+from django.contrib import messages
 
 from .models import Article, Category, Comment
 from .forms import CommentForm
@@ -79,6 +80,7 @@ class PageDetailView(FormMixin, DetailView):
 
     def get_success_url(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        messages.success(self.request, 'The changes have been saved.')
         return reverse('article', kwargs={'post_slug': context['object'].slug})
 
     def form_valid(self, form):

@@ -31,8 +31,10 @@
 </div>
 
 <div class="comment-form" id="reply">
-   {% if form_success %}
-   <h4 style="color:green">Comment sent</h4>
+   {% if messages %}
+     {% for message in messages %}
+      <p style="color:green;">{{ message }}</p>
+     {% endfor %}
    {% endif %}
    <h4>Leave a Reply</h4>
    <form class="form-contact comment_form" action="#reply" method="post" id="commentForm">
