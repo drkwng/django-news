@@ -29,6 +29,15 @@ def get_fresh_news(modeladmin, request, queryset):
 get_fresh_news.short_description = 'Get fresh articles'
 
 
+def moderate_comments(modeladmin, request, queryset):
+    for object in queryset:
+        object.is_moderated = True
+        object.save()
+
+
+moderate_comments.short_description = 'Moderate comments'
+
+
 class CommentArticleInline(admin.TabularInline):
     model = Comment
 
@@ -83,8 +92,14 @@ class AuthorAdmin(admin.ModelAdmin):
         )
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('is_moderated', 'pub_date',
+                    'comment', 'name', 'article')
+    actions = (moderate_comments, )
+
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Newsletter)
-admin.site.register(Comment)
+admin.site.register(Comment, CommentAdmin)

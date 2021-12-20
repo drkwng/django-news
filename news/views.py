@@ -1,102 +1,102 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
 
-from .models import Article, Category, Comment, Newsletter
+from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin
+
+from django.urls import reverse
+
+from .models import Article, Category, Comment
 from .forms import CommentForm
 
 
-def index_handler(request):
-    last_articles = Article.objects.all().order_by(
-        '-pub_date')[:8].prefetch_related('categories')
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
-    context = {
-        'last_articles': last_articles
-    }
-    return render(request, 'index.html', context)
-
-
-def about_handler(request):
-    context = {}
-    return render(request, 'about.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['last_articles'] = Article.objects.all().order_by(
+            '-pub_date')[:8].prefetch_related('categories')
+        return context
 
 
-def contact_handler(request):
-    context = {}
-    return render(request, 'contact.html', context)
+class BlogListView(ListView):
+    template_name = 'category.html'
+    model = Article
+    ordering = '-pub_date'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return super().get_queryset().\
+            prefetch_related('categories')
 
 
-def blog_handler(request, **kwargs):
-    cat_slug = kwargs.get('cat_slug')
-    current_page = int(request.GET.get('page', 1))
-    articles_on_page = 10
+class CategoryListView(ListView, SingleObjectMixin):
+    template_name = 'category.html'
+    model = Article
+    ordering = '-pub_date'
+    paginate_by = 10
+    slug_url_kwarg = 'cat_slug'
 
-    if cat_slug:
-        category = get_object_or_404(Category, slug=cat_slug)
-        last_articles = Article.objects.filter(
-            categories__slug=cat_slug).order_by(
-            '-pub_date').prefetch_related('categories')
-        paginator = Paginator(last_articles, articles_on_page)
-        page_obj = paginator.get_page(current_page)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Category.objects.all())
+        return super().get(request, *args, **kwargs)
 
-    else:
-        last_articles = Article.objects.all().order_by(
-            '-pub_date').prefetch_related('categories')
-        category = None
-        paginator = Paginator(last_articles, articles_on_page)
-        page_obj = paginator.get_page(current_page)
-
-    context = {
-        'category': category,
-        'page_obj': page_obj,
-        'paginator': paginator
-    }
-
-    return render(request, 'category.html', context)
+    def get_queryset(self):
+        self.queryset = self.object.article_set.all().\
+            prefetch_related('categories')
+        return super().get_queryset()
 
 
-def single_handler(request, post_slug):
-    main_article = get_object_or_404(Article, slug=post_slug)
+class PageDetailView(FormMixin, DetailView):
+    template_name = 'single.html'
+    model = Article
+    slug_url_kwarg = 'post_slug'
+    form_class = CommentForm
 
-    try:
-        prev_article = Article.objects.get(id=main_article.id-1)
-    except ObjectDoesNotExist:
-        prev_article = None
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            prev_article = Article.objects.get(id=self.object.id - 1)
+        except ObjectDoesNotExist:
+            prev_article = None
+        try:
+            next_article = Article.objects.get(id=self.object.id + 1)
+        except ObjectDoesNotExist:
+            next_article = None
+        context['prev_article'] = prev_article
+        context['next_article'] = next_article
+        context['comments'] = self.object.comments.filter(is_moderated=True)
+        return context
 
-    try:
-        next_article = Article.objects.get(id=main_article.id+1)
-    except ObjectDoesNotExist:
-        next_article = None
-
-    context = {
-        'article': main_article,
-        'prev_article': prev_article,
-        'next_article': next_article,
-    }
-
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-
+    def post(self, request, *arts, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
         if form.is_valid():
-            data = form.cleaned_data
-            data['article'] = main_article
-            Comment.objects.create(**data)
-            form = None
-
+            return self.form_valid(form)
         else:
-            messages.add_message(
-                request, messages.INFO, 'Error in form fields')
+            return self.form_invalid(form)
 
-    else:
-        form = CommentForm()
+    def get_success_url(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return reverse('article', kwargs={'post_slug': context['object'].slug})
 
-    context['form'] = form
+    def form_valid(self, form):
+        data = form.cleaned_data
+        data['article'] = self.object
+        Comment.objects.create(**data)
+        return super().form_valid(form)
 
-    return render(request, 'single.html', context)
+
+class AboutView(TemplateView):
+    template_name = 'about.html'
 
 
-def robots_handler(request):
-    context = {}
-    return render(request, 'robots.txt', context,
-                  content_type='text/plain')
+class ContactView(TemplateView):
+    template_name = 'contact.html'
+
+
+class RobotsView(TemplateView):
+    template_name = 'robots.txt'
+    content_type = 'text/plain'
+

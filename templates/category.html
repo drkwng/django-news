@@ -14,8 +14,8 @@
                 <div class="col-12">
                     <!-- Nav Card -->
                     <div class="tab-content" id="nav-tabContent">
-                        {% if category %}
-                        <h1>{{ category.name|title }}</h1>
+                        {% if object %}
+                        <h1>{{ object.name|title }}</h1>
                         {% else %}
                         <h1>Hot News</h1>
                         {% endif %}
@@ -31,8 +31,8 @@
                                                 {% endthumbnail %}
                                             </div>
                                             <div class="what-cap">
-                                                <a href="{% url 'category' article.categories.first.slug %}">
-                                                    <span class="color1">{{ article.categories.first.name }}</span>
+                                                <a href="{% url 'category' article.categories.all.0.slug %}">
+                                                    <span class="color1">{{ article.categories.all.0 }}</span>
                                                     <span>{{ article.pub_date }}</span>
                                                 </a>
                                                 <h4><a href="{% url 'article' article.slug %}">{{ article.name }}</a></h4>

@@ -61,6 +61,7 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 related_name='comments')
     pub_date = models.DateTimeField(auto_now_add=True)
+    is_moderated = models.BooleanField(default=False)
 
     objects = models.Manager()
 

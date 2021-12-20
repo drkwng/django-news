@@ -8,5 +8,5 @@ class CommentForm(forms.Form):
     website = forms.URLField(max_length=80)
 
 
-class SubscriptionForm(forms.Form):
+class NewsletterForm(forms.Form):
     email = forms.EmailField()

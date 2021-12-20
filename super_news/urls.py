@@ -25,16 +25,16 @@ import debug_toolbar
 
 
 urlpatterns = [
-    path('', views.index_handler, name='homepage'),
-    path('about', views.about_handler, name='about'),
-    path('contact', views.contact_handler, name='contact'),
+    path('', views.IndexView.as_view(), name='homepage'),
+    path('about', views.AboutView.as_view(), name='about'),
+    path('contact', views.ContactView.as_view(), name='contact'),
 
-    path('blog', views.blog_handler, name='blog'),
-    path('category/<cat_slug>', views.blog_handler, name='category'),
+    path('blog', views.BlogListView.as_view(), name='blog'),
+    path('category/<cat_slug>', views.CategoryListView.as_view(), name='category'),
 
-    path('post/<post_slug>', views.single_handler, name='article'),
+    path('post/<post_slug>', views.PageDetailView.as_view(), name='article'),
 
-    path('robots.txt', views.robots_handler),
+    path('robots.txt', views.RobotsView.as_view()),
 
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
