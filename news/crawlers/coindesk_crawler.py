@@ -11,7 +11,8 @@ from concurrent.futures import ThreadPoolExecutor
 from news.models import Article, Author, Category
 
 
-author, created = Author.objects.get_or_create(name='Coindesk')
+# author, created = Author.objects.get_or_create(name='Coindesk')
+AUTHOR = None
 
 
 def format_datetime(date):
@@ -22,6 +23,10 @@ def format_datetime(date):
 
 
 def crawl_one(url):
+    global AUTHOR
+
+    if not AUTHOR:
+        AUTHOR, created = Author.objects.get_or_create(name='Coindesk')
 
     try:
 
