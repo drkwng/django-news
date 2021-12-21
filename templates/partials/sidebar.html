@@ -53,10 +53,18 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="email" class="form-control" onfocus="this.placeholder = ''"
-                        onblur="this.placeholder = 'Enter email'" placeholder='Enter email' required>
+                        onblur="this.placeholder = 'Enter email'" placeholder='Enter email' required
+                           {% if newsletter_form.email.value %}
+                           value="{{ newsletter_form.email.value }}"
+                           {% endif%}>
                 </div>
                 <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
-                    type="submit">Subscribe</button>
+                        type="submit">Subscribe</button>
+                {% if messages %}
+                {% for message in messages %}
+                <p style="color:green;">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
             </form>
         </aside>
     </div>

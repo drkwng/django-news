@@ -32,11 +32,19 @@
                                         {% csrf_token %}
                                         <input type="email" name="email" id="newsletter-form-email" placeholder="Email Address"
                                         class="placeholder hide-on-focus" onfocus="this.placeholder = ''"
-                                        onblur="this.placeholder = ' Email Address '" required>
+                                        onblur="this.placeholder = ' Email Address '" required
+                                               {% if newsletter_form.email.value %}
+                                               value="{{ newsletter_form.email.value }}"
+                                               {% endif%}>
                                         <div class="form-icon">
                                         <button type="submit" name="submit" id="newsletter-submit"
                                         class="email_icon newsletter-submit button-contactForm"><img src="{% static 'img/logo/form-iocn.png' %}" alt=""></button>
                                         </div>
+                                        {% if messages %}
+                                        {% for message in messages %}
+                                        <p style="color:green;">{{ message }}</p>
+                                        {% endfor %}
+                                        {% endif %}
                                         <div class="mt-10 info"></div>
                                     </form>
                                 </div>

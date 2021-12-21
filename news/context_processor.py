@@ -1,5 +1,4 @@
 from .models import Category, Article
-
 from django.db.models import Count
 
 
@@ -11,7 +10,6 @@ def menu_categories(request):
 
 
 def recent_posts(request):
-
     last_articles = Article.objects.all().order_by(
         '-pub_date')[:4].prefetch_related('categories')
 
