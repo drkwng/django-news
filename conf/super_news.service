@@ -1,0 +1,12 @@
+[Unit]
+Description=Python Django Blog
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/Django
+ExecStart=/usr/local/bin/gunicorn super_news.wsgi
+
+[Install]
+WantedBy=multi-user.target
