@@ -66,7 +66,7 @@ def crawl_one(url):
             'content': my_content,
             'main_image': img_path,
             'pub_date': format_datetime(pub_date),
-            'author': author,
+            'author': AUTHOR,
         }
 
         article, created = Article.objects.get_or_create(**article)
