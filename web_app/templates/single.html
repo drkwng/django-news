@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+<section class="blog_area single-post-area section-padding">
+   <div class="container">
+      <div class="row">
+         <div class="col-lg-8 posts-list">
+            <div class="single-post">
+               <div class="feature-img">
+                  {% thumbnail article.main_image "770" as im %}
+                  <img class="img-fluid" src="{{ im.url }}" alt="">
+                  {% endthumbnail %}
+               </div>
+               <div class="blog_details">
+                  <h1>{{ article.name }}</h1>
+                  <ul class="blog-info-link mt-3 mb-4">
+                     <li>{{ article.categories.all.0 }}</li>
+                     <li><a href="#comments"><i class="fa fa-comments"></i> {{ article.comments.all.count }} Comments</a></li>
+                     <li><span>{{ article.pub_date }}</span></li>
+                  </ul>
+                  {{ article.content | safe }}
+               </div>
+            </div>
+            <div class="navigation-top">
+               <div class="navigation-area">
+                  <div class="row">
+                     {% if prev_article %}
+                     <div
+                        class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
+                        <div class="detials">
+                           <p>Prev Post</p>
+                           <a href="{% url 'article' prev_article.slug %}">
+                              <h4>{{ prev_article.name|truncatewords:5 }}</h4>
+                           </a>
+                        </div>
+                     </div>
+                     {% endif %}
+                     {% if next_article %}
+                     <div
+                        class="col-lg-6 col-md-6 col-12 nav-right flex-row d-flex justify-content-end align-items-center">
+                        <div class="detials">
+                           <p>Next Post</p>
+                           <a href="{% url 'article' next_article.slug %}">
+                              <h4>{{ next_article.name|truncatewords:5 }}</h4>
+                           </a>
+                        </div>
+                     </div>
+                     {% endif %}
+                  </div>
+               </div>
+            </div>
+            <div class="blog-author">
+               <div class="media align-items-center">
+                  <img src="{{ article.author.avatar.url }}" alt="">
+                  <div class="media-body">
+                     <h4>{{ article.author.name }}</h4>
+                     <p>{{ article.author.bio }}</p>
+                  </div>
+               </div>
+            </div>
+         {% include 'partials/comments.html' %}
+         </div>
+         {% include 'partials/sidebar.html' %}
+      </div>
+   </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+<main>
+<!-- Whats New Start -->
+<section class="whats-news-area pt-50 pb-20">
+    <div class="container">
+        <div class="row">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Nav Card -->
+                    <div class="tab-content" id="nav-tabContent">
+                        {% if object %}
+                        <h1>{{ object.name|title }}</h1>
+                        {% else %}
+                        <h1>Hot News</h1>
+                        {% endif %}
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="whats-news-caption">
+                                <div class="row">
+                                    {% for article in page_obj %}
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="single-what-news mb-100">
+                                            <div class="what-img">
+                                                {% thumbnail article.main_image "440" as im %}
+                                                <img src="{{ im.url }}" alt="">
+                                                {% endthumbnail %}
+                                            </div>
+                                            <div class="what-cap">
+                                                <a href="{% url 'category' article.categories.all.0.slug %}">
+                                                    <span class="color1">{{ article.categories.all.0 }}</span>
+                                                    <span>{{ article.pub_date }}</span>
+                                                </a>
+                                                <h4><a href="{% url 'article' article.slug %}">{{ article.name }}</a></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                <!-- End Nav Card -->
+                </div>
+            </div>
+        </div>
+        {% include 'partials/sidebar.html' %}
+        </div>
+    </div>
+</section>
+<!-- Whats New End -->
+
+{% include 'partials/pagination.html' %}
+
+</main>
+{% endblock content %}
