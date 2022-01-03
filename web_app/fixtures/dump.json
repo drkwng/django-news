@@ -50,24 +50,6 @@
     }
 },
 {
-    "model": "news.author",
-    "pk": 1,
-    "fields": {
-        "name": "Admin",
-        "avatar": "-RFEqR33.jpg",
-        "bio": "rappampam"
-    }
-},
-{
-    "model": "news.author",
-    "pk": 4,
-    "fields": {
-        "name": "Coindesk",
-        "avatar": "avatars/coindesk_X3EfYQK.png",
-        "bio": "Coindesk resource"
-    }
-},
-{
     "model": "news.article",
     "pk": 470,
     "fields": {
