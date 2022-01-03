@@ -20,9 +20,17 @@ services:
         - ./web_app:/code
     ports:
       - "8000:8000"
+    depends_on:
+      - db
+
 
   db:
     image: postgres
     env_file: ./my.env
     ports:
       - "5455:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

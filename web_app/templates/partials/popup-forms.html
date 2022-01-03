@@ -1,0 +1,30 @@
+<div id="signin" class="overlay1">
+	<div class="popup">
+		<a class="close" href="#">&times;</a>
+		<div class="content">
+			<form action="{% url 'userena_signin' %}" method="post">
+				{% csrf_token %}
+				<input name="identification" type="text" placeholder="Enter email or login" required />
+				<input name="password" type="password" placeholder="Enter password" required />
+				<input type="submit" content="Submit" />
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div id="signup" class="overlay1">
+	<div class="popup">
+		<a class="close" href="#">&times;</a>
+		<div class="content">
+			<form action="{% url 'userena_signup' %}" method="post">
+				{% csrf_token %}
+				<input name="username" type="text" placeholder="Enter usernname" required />
+				<input name="email" type="email" placeholder="Enter email" required />
+				<input name="password1" type="password" placeholder="Enter password" required />
+				<input name="password2" type="password" placeholder="Enter password again" required />
+				<input type="submit" content="Submit" />
+			</form>
+		</div>
+	</div>
+</div>

@@ -10,9 +10,7 @@
          <div class="col-lg-8 posts-list">
             <div class="single-post">
                <div class="feature-img">
-                  {% thumbnail article.main_image "770" as im %}
-                  <img class="img-fluid" src="{{ im.url }}" alt="">
-                  {% endthumbnail %}
+                  <img class="img-fluid" src="{{ article.main_image|thumbnail_url:'single' }}" alt="">
                </div>
                <div class="blog_details">
                   <h1>{{ article.name }}</h1>
@@ -52,15 +50,19 @@
                   </div>
                </div>
             </div>
+
             <div class="blog-author">
                <div class="media align-items-center">
-                  <img src="{{ article.author.avatar.url }}" alt="">
                   <div class="media-body">
-                     <h4>{{ article.author.name }}</h4>
+                     {% if article.author %}
+                     <h4>{{ article.author.user }}</h4>
+                     <img src="{{ article.author.avatar.url }}">
                      <p>{{ article.author.bio }}</p>
+                     {% endif %}
                   </div>
                </div>
             </div>
+
          {% include 'partials/comments.html' %}
          </div>
          {% include 'partials/sidebar.html' %}

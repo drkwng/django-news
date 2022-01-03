@@ -35,9 +35,11 @@ urlpatterns = [
     path('post/<post_slug>', views.PageDetailView.as_view(), name='article'),
 
     path('robots.txt', views.RobotsView.as_view()),
-
+    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
+
+    path('accounts/', include('authors.urls')),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

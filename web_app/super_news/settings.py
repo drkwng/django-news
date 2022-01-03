@@ -26,14 +26,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = ['*']
-
 INTERNAL_IPS = ['127.0.0.1']
-
 
 # Application definition
 
 INSTALLED_APPS = [
     'news.apps.NewsConfig',
+    'django.contrib.sites',
+    # 'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,10 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
-
     'django_summernote',
-    'sorl.thumbnail'
+
+    'authors',
+    'userena',
+    'guardian',
+    'easy_thumbnails',
+
 ]
 
 MIDDLEWARE = [
@@ -55,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'super_news.urls'
@@ -77,7 +79,51 @@ TEMPLATES = [
         },
     },
 ]
+
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'blog': {'size': (440, 300), 'crop': True},
+        'single': {'size': (770, 400), 'crop': True},
+    },
+}
+
+
+SITE_ID = 1
+
 WSGI_APPLICATION = 'super_news.wsgi.application'
+
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
+
+
+ANONYMOUS_USER_NAME = 'AnonymousAuthor'
+
+AUTH_PROFILE_MODULE = 'authors.Author'
+
+
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
+USERENA_REDIRECT_ON_SIGNOUT = '/'
+
+USERENA_SIGNIN_AFTER_SIGNUP = True
+USERENA_ACTIVATION_REQUIRED = False
+
+USERENA_SIGNIN_REDIRECT_URL = '/accounts/%(username)s/'
+
+USERENA_DISABLE_PROFILE_LIST = True
+
+USERENA_PROFILE_DETAIL_TEMPLATE = 'userena/profile_detail.html'
 
 
 # Database
@@ -153,4 +199,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar', ]
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + ['127.0.0.1', '10.0.2.2']
+    DEBUG_TOOLBAR_CONFIG = {'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax()}
 
