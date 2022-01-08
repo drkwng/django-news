@@ -33,6 +33,7 @@ urlpatterns = [
     path('category/<cat_slug>', views.CategoryListView.as_view(), name='category'),
 
     path('post/<post_slug>', views.PageDetailView.as_view(), name='article'),
+    path('search/', views.SearchView.as_view(), name='search'),
 
     path('robots.txt', views.RobotsView.as_view()),
     path('grappelli/', include('grappelli.urls')),
