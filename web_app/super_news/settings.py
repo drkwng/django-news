@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'guardian',
     'easy_thumbnails',
 
+    'django_elasticsearch_dsl',
+
 ]
 
 MIDDLEWARE = [
@@ -146,6 +148,13 @@ DATABASES = {
         'HOST': 'db',
         'PORT': '5432',
     }
+}
+
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elasticsearch:9200'
+    },
 }
 
 

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+<main>
+<!-- Whats New Start -->
+<section class="whats-news-area pt-50 pb-20">
+    <div class="container">
+        <div class="row">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Nav Card -->
+                    <div class="tab-content" id="nav-tabContent">
+                        {% if page_obj %}
+                        <h1>Search Results For: {{ query }}</h1>
+                        {% else %}
+                        <h1>No Search Results Found</h1>
+                        {% endif %}
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="whats-news-caption">
+                                <div class="row">
+                                    {% for article in page_obj %}
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="single-what-news mb-100">
+                                            <div class="what-img">
+                                                <img src="{{ article.main_image|thumbnail_url:'blog' }}" alt="">
+                                            </div>
+                                            <div class="what-cap">
+                                                <a href="{% url 'category' article.categories.all.0.slug %}">
+                                                    <span class="color1">{{ article.categories.all.0 }}</span>
+                                                    <span>{{ article.pub_date }}</span>
+                                                </a>
+                                                <h4><a href="{% url 'article' article.slug %}">{{ article.name }}</a></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                <!-- End Nav Card -->
+                </div>
+            </div>
+        </div>
+        {% include 'partials/sidebar.html' %}
+        </div>
+    </div>
+</section>
+<!-- Whats New End -->
+
+<div class="pagination-area pb-45 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="single-wrap d-flex justify-content-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                          {% if page_obj.has_previous %}
+                          <li class="page-item"><a class="page-link" href="?q={{ query }}&page={{ page_obj.previous_page_number }}"><span class="flaticon-arrow roted"></span></a></li>
+                          {% endif %}
+                          {% for p in paginator.page_range %}
+                          <li class="page-item active"><a class="page-link" href="?q={{ query }}&page={{ p }}">{{ p }}</a></li>
+                          {% endfor %}
+                          {% if page_obj.has_next %}
+                          <li class="page-item"><a class="page-link" href="?q={{ query }}&page={{ page_obj.next_page_number }}"><span class="flaticon-arrow right-arrow"></span></a></li>
+                          {% endif %}
+                        </ul>
+                      </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+{% endblock content %}

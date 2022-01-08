@@ -13,6 +13,7 @@ from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.paginator import Paginator
 
 from .models import Article, Category, Comment
+from .documents import ArticleDocument
 from .forms import CommentForm
 
 
@@ -116,17 +117,11 @@ class SearchView(TemplateView):
         else:
             self.current_page = int(self.current_page)
 
-        self.vector = SearchVector('name', weight='A') + \
-                 SearchVector('content', weight='B')
-
-        self.query = SearchQuery(self.query_text)
-
-        self.results = Article.objects.annotate(
-            rank=SearchRank(self.vector, self.query)
-        ).filter(rank__gte=0.2).order_by('-rank')
+        self.results = ArticleDocument.search().query(
+            "match", content=self.query_text).to_queryset()
 
         self.results_count = self.results.count()
-        max_page = self.results_count // self.per_page
+        max_page = self.results_count // self.per_page + 1
 
         if self.current_page > max_page:
             url = reverse('search')
