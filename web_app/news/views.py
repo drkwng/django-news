@@ -8,13 +8,14 @@ from django.shortcuts import redirect
 
 from django.contrib import messages
 
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-
 from django.core.paginator import Paginator
+
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import Article, Category, Comment
 from .documents import ArticleDocument
-from .forms import CommentForm
+from .forms import CommentForm, ContactForm
 
 
 class IndexView(TemplateView):
@@ -76,7 +77,7 @@ class PageDetailView(FormMixin, DetailView):
         context['comments'] = self.object.comments.filter(is_moderated=True)
         return context
 
-    def post(self, request, *arts, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
@@ -100,8 +101,34 @@ class AboutView(TemplateView):
     template_name = 'about.html'
 
 
-class ContactView(TemplateView):
+class ContactView(FormMixin, TemplateView):
     template_name = 'contact.html'
+    form_class = ContactForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_success_url(self, **kwargs):
+        messages.success(self.request, 'Your message has been sent')
+        return reverse('contact')
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        send_mail(
+            subject=f"{data['subject']} / {data['name']}",
+            message=data['message'],
+            from_email=data['email'],
+            recipient_list=[settings.EMAIL_HOST_USER, ])
+
+        return super().form_valid(form)
 
 
 class SearchView(TemplateView):

@@ -5,12 +5,8 @@ __pycache__/
 .idea/
 
 /web_app/static_root/
+/web_app/media/*
 *.env
-
-# Media folders
-#media/images/*
-#media/avatars/*
-/web_app/media/cache/
 
 # C extensions
 *.so
