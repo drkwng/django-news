@@ -1,3 +1,4 @@
+from .models import Newsletter
 from django import forms
 
 
@@ -8,8 +9,10 @@ class CommentForm(forms.Form):
     website = forms.URLField(max_length=80)
 
 
-class NewsletterForm(forms.Form):
-    email = forms.EmailField()
+class NewsletterForm(forms.ModelForm):
+    class Meta:
+        model = Newsletter
+        fields = ('email', )
 
 
 class ContactForm(forms.Form):

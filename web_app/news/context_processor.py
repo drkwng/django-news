@@ -1,5 +1,10 @@
-from .models import Category, Article
+from .models import Category, Article, Newsletter
+from .forms import NewsletterForm
+
 from django.db.models import Count
+
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
 
 
 def menu_categories(request):
@@ -16,3 +21,20 @@ def recent_posts(request):
     return {
         'recent_posts': last_articles
     }
+
+
+def subscribe(request):
+    if request.method == 'POST':
+        newsletter_form = NewsletterForm(request.POST)
+        if newsletter_form.is_valid():
+            data = newsletter_form.cleaned_data
+            Newsletter.objects.create(**data)
+            # Newsletter.objects.create(newsletter_form.cleaned_data['email'])
+            return HttpResponseRedirect('/')
+
+        else:
+            context = {'form': newsletter_form}
+            return render(request, 'homepage', context)
+
+    else:
+        return render(request, 'homepage')

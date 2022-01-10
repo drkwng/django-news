@@ -28,16 +28,16 @@
                             <!-- Form -->
                             <div class="footer-form" >
                                 <div id="mc_embed_signup">
-                                    <form action="" method="post">
+                                    <form action="{% url 'subscribe' %}" method="post">
                                         {% csrf_token %}
                                         <input type="email" name="email" id="newsletter-form-email" placeholder="Email Address"
                                         class="placeholder hide-on-focus" onfocus="this.placeholder = ''"
                                         onblur="this.placeholder = ' Email Address '" required
-                                               {% if newsletter_form.email.value %}
-                                               value="{{ newsletter_form.email.value }}"
+                                               {% if subscribe.email.value %}
+                                               value="{{ subscribe.email.value }}"
                                                {% endif%}>
                                         <div class="form-icon">
-                                        <button type="submit" name="submit" id="newsletter-submit"
+                                        <button type="submit" id="newsletter-submit"
                                         class="email_icon newsletter-submit button-contactForm"><img src="{% static 'img/logo/form-iocn.png' %}" alt=""></button>
                                         </div>
                                         <div class="mt-10 info"></div>

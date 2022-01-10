@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from news import views
+from news.context_processor import subscribe
 
 import debug_toolbar
 
@@ -41,6 +42,8 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
 
     path('accounts/', include('authors.urls')),
+
+    path('subscribe/', subscribe, name='subscribe'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
