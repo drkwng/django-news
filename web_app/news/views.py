@@ -131,46 +131,23 @@ class ContactView(FormMixin, TemplateView):
         return super().form_valid(form)
 
 
-class SearchView(TemplateView):
+class SearchView(ListView):
     template_name = 'search.html'
-    per_page = 8
+    paginate_by = 6
+    model = Article
 
     def get(self, request, *args, **kwargs):
         self.query_text = self.request.GET.get('q')
-        self.current_page = self.request.GET.get('page')
+        return super().get(request, *args, **kwargs)
 
-        if not self.current_page:
-            self.current_page = 1
-        else:
-            self.current_page = int(self.current_page)
-
-        self.results = ArticleDocument.search().query(
+    def get_queryset(self):
+        return ArticleDocument.search().query(
             "match", content=self.query_text).to_queryset()
 
-        self.results_count = self.results.count()
-        max_page = self.results_count // self.per_page + 1
-
-        if self.current_page > max_page:
-            url = reverse('search')
-            url += f'?q={self.query_text}&page={max_page}'
-            return redirect(url)
-
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
-
     def get_context_data(self, **kwargs):
+        context = super().get_context_data()
 
-        context = {
-            'query': self.query_text,
-            'search_articles': self.results,
-            'current_page': self.current_page
-        }
-
-        if self.results_count > self.per_page:
-            paginator = Paginator(self.results, self.per_page)
-            context['paginator'] = paginator
-            context['page_obj'] = paginator.page(self.current_page)
-
+        context['query'] = self.query_text
         return context
 
 
