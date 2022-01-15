@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django.contrib.sitemaps',
+
     'django_summernote',
 
     'authors',
@@ -76,7 +78,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'news.context_processor.menu_categories',
-                'news.context_processor.recent_posts'
+                'news.context_processor.recent_posts',
+                'news.context_processor.tags_linking',
             ],
         },
     },

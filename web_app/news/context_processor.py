@@ -1,4 +1,4 @@
-from .models import Category, Article, Newsletter
+from .models import Category, Article, Newsletter, Tag
 from .forms import NewsletterForm
 
 from django.db.models import Count
@@ -12,6 +12,12 @@ def menu_categories(request):
         'article__id')).order_by('-count')
 
     return {'menu_categories': cat_list}
+
+
+def tags_linking(request):
+    tags_list = Tag.objects.order_by('?')[:10]
+
+    return {'tags_list': tags_list}
 
 
 def recent_posts(request):

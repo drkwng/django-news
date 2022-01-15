@@ -5,10 +5,14 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-         <title>News HTML-5 Template </title>
-        <meta name="description" content="">
+         <title>{% block title %}CoinNews - Homepage{% endblock %}</title>
+        <meta name="description" content="{% block meta_description %}Awesome News Read Now{% endblock %}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+        {% block canonical %}{% endblock %}
+        {% block robots %}{% endblock %}
+
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 		<!-- CSS here -->
             <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
             <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">

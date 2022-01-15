@@ -19,7 +19,10 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.contrib.sitemaps.views import index, sitemap
+
 from news import views
+from news.sitemaps import sitemaps
 from news.context_processor import subscribe
 
 import debug_toolbar
@@ -27,16 +30,22 @@ import debug_toolbar
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='homepage'),
-    path('about', views.AboutView.as_view(), name='about'),
-    path('contact', views.ContactView.as_view(), name='contact'),
+    path('about/', views.AboutView.as_view(), name='about'),
+    path('contact/', views.ContactView.as_view(), name='contact'),
 
-    path('blog', views.BlogListView.as_view(), name='blog'),
-    path('category/<cat_slug>', views.CategoryListView.as_view(), name='category'),
+    path('blog/', views.BlogListView.as_view(), name='blog'),
 
-    path('post/<post_slug>', views.PageDetailView.as_view(), name='article'),
+    path('post/<post_slug>/', views.PageDetailView.as_view(), name='article'),
+    path('tag/<slug>/', views.TagListView.as_view(), name='tag'),
     path('search/', views.SearchView.as_view(), name='search'),
 
     path('robots.txt', views.RobotsView.as_view()),
+
+    path('sitemap.xml', index, {'sitemaps': sitemaps,
+                                'sitemap_url_name': 'sitemaps'}),
+    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps},
+         name='sitemaps'),
+
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
@@ -44,6 +53,8 @@ urlpatterns = [
     path('accounts/', include('authors.urls')),
 
     path('subscribe/', subscribe, name='subscribe'),
+
+    path('<cat_slug>/', views.CategoryListView.as_view(), name='category'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

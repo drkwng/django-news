@@ -6,7 +6,7 @@ from news.crawlers import coindesk_crawler
 
 from django_summernote.admin import SummernoteModelAdmin
 
-from .models import Article, Category, Newsletter, Comment
+from .models import Article, Category, Newsletter, Comment, Tag
 
 
 def count_words(modeladmin, request, queryset):
@@ -84,3 +84,4 @@ admin.site.register(Article, ArticleAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Newsletter)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Tag)

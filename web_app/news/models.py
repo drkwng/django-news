@@ -2,9 +2,21 @@ from django.db import models
 from string import punctuation
 from authors.models import Author
 
+from django.urls import reverse
 
-# Create your models here.
-class Category(models.Model):
+
+class SEONews(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    canonical_url = models.URLField(blank=True, null=True)
+    meta_robots = models.CharField(max_length=50, blank=True, null=True)
+    h1 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class Category(SEONews):
     name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(max_length=255, unique=True)
     in_menu = models.BooleanField(default=True)
@@ -18,8 +30,11 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = 'Categories'
 
+    def get_absolute_url(self):
+        return reverse('category', args=(self.slug, ))
 
-class Article(models.Model):
+
+class Article(SEONews):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     content = models.TextField()
@@ -34,6 +49,9 @@ class Article(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('article', args=(self.slug, ))
 
     def count_unique_words(self):
         text = self.content.replace('<p>', '').replace('</p>', '')
@@ -71,13 +89,15 @@ class Newsletter(models.Model):
         return self.email
 
 
-class Tag(models.Model):
+class Tag(SEONews):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
-    articles = models.ManyToManyField(Article)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('tag', args=(self.slug, ))
 
 
 

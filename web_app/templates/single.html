@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 
+{% block title %}{% if object.title %}{{ object.title }} - CoinNews
+{% else %}{{ object.name|title }} - CoinNews{% endif %}{% endblock %}
+{% block meta_description %}{% if object.description %}{{ object.description }}
+{% else %}{{ object.short_description }} - {{ object.pub_date }}{% endif %}{% endblock %}
+
+{% block canonical %}<link rel="canonical" href="{{ request.get_host }}{% url 'article' object.slug %}" />{% endblock %}
+
+{% block robots %}
+    {% if object %}
+        {% if object.robots %}
+            <meta name="robots" content="{{ object.robots }}" />
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
 {% load static %}
 {% load thumbnail %}
 

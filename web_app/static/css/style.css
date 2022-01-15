@@ -42,3 +42,15 @@
 .popup .content {
     overflow: auto;
 }
+.tags_cloud a {
+    border: 2px solid #f2f2f2;
+    background: #fff;
+    color: #000;
+    padding: 5px;
+    font-size: 1.2em;
+    margin: 0 5px;
+    transition:.3s;
+}
+.tags_cloud a:hover {
+    opacity:.8;
+}

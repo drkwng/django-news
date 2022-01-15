@@ -6,6 +6,8 @@ from django.views.generic.edit import FormMixin
 from django.urls import reverse
 from django.shortcuts import redirect
 
+from slugify import slugify
+
 from django.contrib import messages
 
 from django.core.paginator import Paginator
@@ -13,7 +15,7 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
 
-from .models import Article, Category, Comment
+from .models import Article, Category, Comment, Tag
 from .documents import ArticleDocument
 from .forms import CommentForm, ContactForm
 
@@ -138,6 +140,13 @@ class SearchView(ListView):
 
     def get(self, request, *args, **kwargs):
         self.query_text = self.request.GET.get('q')
+        try:
+            Tag.objects.create(
+                name=self.query_text,
+                slug=slugify(self.query_text)
+            )
+        except Exception:
+            pass
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -149,6 +158,23 @@ class SearchView(ListView):
 
         context['query'] = self.query_text
         return context
+
+
+class TagListView(ListView, SingleObjectMixin):
+    template_name = 'tags.html'
+    model = Tag
+    ordering = '-pub_date'
+    paginate_by = 10
+    slug_url_kwarg = 'slug'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Tag.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        self.queryset = ArticleDocument.search().query(
+            "match", content=self.object.name).to_queryset()
+        return super().get_queryset()
 
 
 class RobotsView(TemplateView):
