@@ -5,14 +5,16 @@ from datetime import datetime
 from slugify import slugify
 from requests_html import HTMLSession
 from django.utils.timezone import make_aware
+from cache_memoize import cache_memoize
 
 from concurrent.futures import ThreadPoolExecutor
 
 from news.models import Article, Author, Category
 
 
-# author, created = Author.objects.get_or_create(name='Coindesk')
-AUTHOR = None
+@cache_memoize(3600)
+def get_author(a_name='Coindesk'):
+    return Author.objects.get_or_create(name=a_name)
 
 
 def format_datetime(date):
@@ -23,10 +25,7 @@ def format_datetime(date):
 
 
 def crawl_one(url):
-    global AUTHOR
-
-    if not AUTHOR:
-        AUTHOR, created = Author.objects.get_or_create(name='Coindesk')
+    author, created = get_author()
 
     try:
 
@@ -66,7 +65,7 @@ def crawl_one(url):
             'content': my_content,
             'main_image': img_path,
             'pub_date': format_datetime(pub_date),
-            'author': AUTHOR,
+            'author': author,
         }
 
         article, created = Article.objects.get_or_create(**article)

@@ -22,7 +22,7 @@
     {% endif %}
 {% endblock %}
 
-
+{% load cache %}
 {% load static %}
 {% load thumbnail %}
 
@@ -32,6 +32,8 @@
 <section class="whats-news-area pt-50 pb-20">
     <div class="container">
         <div class="row">
+
+        {% cache 600 article_list %}
         <div class="col-lg-8">
             <div class="row">
                 <div class="col-12">
@@ -74,6 +76,8 @@
                 </div>
             </div>
         </div>
+        {% endcache %}
+
         {% include 'partials/sidebar.html' %}
         </div>
     </div>

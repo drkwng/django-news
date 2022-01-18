@@ -25,12 +25,14 @@ from news import views
 from news.sitemaps import sitemaps
 from news.context_processor import subscribe
 
+from django.views.decorators.cache import cache_page
+
 import debug_toolbar
 
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='homepage'),
-    path('about/', views.AboutView.as_view(), name='about'),
+    path('', cache_page(60*60)(views.IndexView.as_view()), name='homepage'),
+    path('about/', cache_page(60*60)(views.AboutView.as_view()), name='about'),
     path('contact/', views.ContactView.as_view(), name='contact'),
 
     path('blog/', views.BlogListView.as_view(), name='blog'),
@@ -41,9 +43,9 @@ urlpatterns = [
 
     path('robots.txt', views.RobotsView.as_view()),
 
-    path('sitemap.xml', index, {'sitemaps': sitemaps,
-                                'sitemap_url_name': 'sitemaps'}),
-    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps},
+    path('sitemap.xml', cache_page(86400)(index), {'sitemaps': sitemaps,
+                                                   'sitemap_url_name': 'sitemaps'}),
+    path('sitemap-<section>.xml', cache_page(86400)(sitemap), {'sitemaps': sitemaps},
          name='sitemaps'),
 
     path('grappelli/', include('grappelli.urls')),

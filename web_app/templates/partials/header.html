@@ -1,5 +1,7 @@
+{% load cache %}
 {% load static %}
 
+{% cache 600 header %}
 <header>
     <!-- Header Start -->
    <div class="header-area">
@@ -65,3 +67,4 @@
    </div>
     <!-- Header End -->
 </header>
+{% endcache %}

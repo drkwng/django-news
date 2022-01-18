@@ -94,6 +94,14 @@ THUMBNAIL_ALIASES = {
 }
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+    }
+}
+
+
 SITE_ID = 1
 
 WSGI_APPLICATION = 'super_news.wsgi.application'

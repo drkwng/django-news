@@ -1,5 +1,7 @@
+{% load cache %}
 {% load static %}
 
+{% cache 300 comments_list %}
 <div class="comments-area" id="comments">
    <h4>{{ article.comments.all.count }} Comments</h4>
    {% for comm in article.comments.all %}
@@ -29,6 +31,7 @@
    {% endif %}
    {% endfor %}
 </div>
+{% endcache %}
 
 <div class="comment-form" id="reply">
    {% if messages %}

@@ -4,13 +4,13 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
 from django.urls import reverse
-from django.shortcuts import redirect
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 
 from slugify import slugify
 
 from django.contrib import messages
-
-from django.core.paginator import Paginator
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -103,6 +103,7 @@ class AboutView(TemplateView):
     template_name = 'about.html'
 
 
+@method_decorator(csrf_protect, name='dispatch')
 class ContactView(FormMixin, TemplateView):
     template_name = 'contact.html'
     form_class = ContactForm

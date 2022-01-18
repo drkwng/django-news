@@ -6,6 +6,7 @@ __pycache__/
 
 /web_app/static_root/
 /web_app/media/*
+/web_app/django_cache/*
 *.env
 
 # C extensions
