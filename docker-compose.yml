@@ -9,6 +9,7 @@ services:
     volumes:
       - ./web_app/static_root:/code/static_root
       - ./web_app/media:/code/media
+      - ./nginx/logs:/var/log/nginx
     depends_on:
       - web
 
