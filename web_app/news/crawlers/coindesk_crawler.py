@@ -7,14 +7,14 @@ from requests_html import HTMLSession
 from django.utils.timezone import make_aware
 from cache_memoize import cache_memoize
 
-from concurrent.futures import ThreadPoolExecutor
+from celery import shared_task
 
 from news.models import Article, Author, Category
 
 
 @cache_memoize(3600)
-def get_author(a_name='Coindesk'):
-    return Author.objects.get_or_create(name=a_name)
+def get_author(u_id=4):
+    return Author.objects.get(user_id=u_id)
 
 
 def format_datetime(date):
@@ -24,9 +24,9 @@ def format_datetime(date):
     return make_aware(datetime.strptime(replaced_daytime, f'%b %d, %Y at %I:%M %p %Z'))
 
 
+@shared_task
 def crawl_one(url):
-    author, created = get_author()
-    print('START CRAWL ONE!!!!!!!!!!!!!!!!!!')
+    author = get_author()
     try:
 
         with HTMLSession() as session:
@@ -92,9 +92,10 @@ def run(task=None):
     # Article.objects.all().delete()
 
     fresh_news = get_fresh_urls()
-
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        executor.map(crawl_one, fresh_news)
+    for url in fresh_news:
+        crawl_one.delay(url)
+    # with ThreadPoolExecutor(max_workers=10) as executor:
+    #     executor.map(crawl_one, fresh_news)
 
     if task:
         task.status = 'Succeed'
