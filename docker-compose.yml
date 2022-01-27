@@ -22,7 +22,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
-
+      - redis_q
+    restart: always
 
   db:
     image: postgres
@@ -32,6 +33,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis_q:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    restart: always
 
   elasticsearch:
       build: ./elasticsearch

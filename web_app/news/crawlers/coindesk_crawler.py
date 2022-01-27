@@ -26,7 +26,7 @@ def format_datetime(date):
 
 def crawl_one(url):
     author, created = get_author()
-
+    print('START CRAWL ONE!!!!!!!!!!!!!!!!!!')
     try:
 
         with HTMLSession() as session:
@@ -67,7 +67,6 @@ def crawl_one(url):
             'pub_date': format_datetime(pub_date),
             'author': author,
         }
-
         article, created = Article.objects.get_or_create(**article)
 
         cat, created = Category.objects.get_or_create(**category)
@@ -79,19 +78,29 @@ def crawl_one(url):
         print(f'{url}', e, type(e), sys.exc_info()[-1].tb_lineno)
 
 
-def get_urls():
+def get_fresh_urls():
     xml_url = 'https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index/?outputType=xml'
 
     with HTMLSession() as session:
         r = session.get(xml_url)
         urls = re.findall(r'<loc>(https?://[^\s"]+)</loc>', r.content.decode())
 
-    return urls
+    return urls[:30]
 
 
-def run():
+def run(task=None):
     # Article.objects.all().delete()
-    urls = get_urls()
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        executor.map(crawl_one, urls)
 
+    fresh_news = get_fresh_urls()
+
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        executor.map(crawl_one, fresh_news)
+
+    if task:
+        task.status = 'Succeed'
+        task.done = True
+        task.save()
+
+
+if __name__ == '__main__':
+    run()
