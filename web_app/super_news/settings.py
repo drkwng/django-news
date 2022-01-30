@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -101,7 +102,7 @@ CACHES = {
 }
 
 
-CELERY_BROKER_URL = 'redis://redis_q:6379/0'
+CELERY_BROKER_URL = f"redis://:{os.getenv('REDIS_PASSWORD')}@redis_q:6379/0"
 # CELERY_RESULT_BACKEND = 'redis://redis_q:6379/1'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['application/json']
@@ -171,6 +172,13 @@ DATABASES = {
 }
 
 
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'test_db.sqlite'
+    }
+
+
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'elasticsearch:9200'
@@ -228,6 +236,32 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'my-custom': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'debug-to-file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/code/logs/django-debug.log',
+            'formatter': 'my-custom'
+        }
+    },
+    'loggers': {
+        'custom': {
+            'handlers': ['debug-to-file'],
+            'level': 'INFO'
+        }
+    }
+}
 
 
 if DEBUG:

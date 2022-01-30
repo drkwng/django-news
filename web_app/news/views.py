@@ -1,3 +1,5 @@
+import logging
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.views.generic import TemplateView, ListView, DetailView
@@ -18,6 +20,13 @@ from django.conf import settings
 from .models import Article, Category, Comment, Tag
 from .documents import ArticleDocument
 from .forms import CommentForm, ContactForm
+
+
+logger = logging.getLogger('custom')
+
+# loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+#
+# logger.info(loggers)
 
 
 class IndexView(TemplateView):
@@ -148,6 +157,9 @@ class SearchView(ListView):
             )
         except Exception:
             pass
+
+        logger.debug(locals())
+
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -158,6 +170,9 @@ class SearchView(ListView):
         context = super().get_context_data()
 
         context['query'] = self.query_text
+
+        logger.debug(context)
+
         return context
 
 

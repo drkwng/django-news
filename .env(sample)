@@ -1,0 +1,11 @@
+POSTGRES_DB=news_db
+POSTGRES_USER=news_user
+POSTGRES_PASSWORD=news_pass
+SECRET_KEY=django-insecure-!+2a!65*cvea*5g+q*st1f^o8_uu#f0@e&y-g!=j20i_0mnh(o
+
+REDIS_PASSWORD=redis_pass
+
+DEBUG=1
+
+EMAIL_USER=myemail@gmail.com
+EMAIL_PASS=email_pass
